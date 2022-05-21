@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Monity.Models
 {
-    public class MonityContext : DbContext
+    public class MonityContext : IdentityDbContext<IdentityUser>
     {
         public MonityContext(DbContextOptions<MonityContext> options)
             : base(options)
