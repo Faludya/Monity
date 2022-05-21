@@ -21,7 +21,7 @@ namespace Monity.Services
 
             var userBoard = new UserBoard()
             {
-                UserId = userId,
+                UserId = userId.ToString(),
                 BoardId = board.Id
             };
 
@@ -42,7 +42,7 @@ namespace Monity.Services
 
         public List<Board> GetBoardsByUserId(int userId)
         {
-           var userBoards = _repositoryWrapper.UserBoardRepository.FindByCondition(c => c.UserId == userId).ToList();
+           var userBoards = _repositoryWrapper.UserBoardRepository.FindByCondition(c => c.UserId == userId.ToString()).ToList();
            var boardsList = new List<Board>();
 
             foreach(var board in userBoards)

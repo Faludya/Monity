@@ -22,7 +22,7 @@ namespace Monity.Services
             boardVm.Boards = new List<BoardContainer>();
 
             boardVm.UserBoards = _repositoryWrapper.UserBoardRepository.
-                                    FindByCondition(c => c.UserId == id).ToList();
+                                    FindByCondition(c => c.UserId == id.ToString()).ToList();
             
             foreach(var userBoard in boardVm.UserBoards)
             {
@@ -57,7 +57,7 @@ namespace Monity.Services
             boardVm.Boards = new List<BoardContainer>();
 
             boardVm.UserBoards = _repositoryWrapper.UserBoardRepository.
-                                    FindByCondition(c => c.UserId == id).ToList();
+                                    FindByCondition(c => c.UserId == id.ToString()).ToList();
 
             foreach (var userBoard in boardVm.UserBoards)
             {

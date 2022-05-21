@@ -86,21 +86,6 @@ namespace Monity.Repositories
             }
         }
 
-        private IUserRepository? _userRepository;
-
-        public IUserRepository UserRepository
-        {
-            get
-            {
-                if (_userRepository == null)
-                {
-                    _userRepository = new UserRepository(_monityContext);
-                }
-
-                return _userRepository;
-            }
-        }
-
         private IUserTaskRepository? _userTaskRepository;
 
         public IUserTaskRepository UserTaskRepository

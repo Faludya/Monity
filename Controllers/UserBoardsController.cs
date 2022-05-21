@@ -22,7 +22,7 @@ namespace Monity.Controllers
         // GET: UserBoards
         public async Task<IActionResult> Index()
         {
-            var monityContext = _context.UserBoards.Include(u => u.Board).Include(u => u.User);
+            var monityContext = _context.UserBoards.Include(u => u.Board);
             return View(await monityContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace Monity.Controllers
 
             var userBoard = await _context.UserBoards
                 .Include(u => u.Board)
-                .Include(u => u.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userBoard == null)
             {
@@ -50,7 +49,7 @@ namespace Monity.Controllers
         public IActionResult Create()
         {
             ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -68,7 +67,7 @@ namespace Monity.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
             return View(userBoard);
         }
 
@@ -86,7 +85,7 @@ namespace Monity.Controllers
                 return NotFound();
             }
             ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
             return View(userBoard);
         }
 
@@ -123,7 +122,7 @@ namespace Monity.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
             return View(userBoard);
         }
 
@@ -137,7 +136,6 @@ namespace Monity.Controllers
 
             var userBoard = await _context.UserBoards
                 .Include(u => u.Board)
-                .Include(u => u.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (userBoard == null)
             {
