@@ -14,6 +14,27 @@ namespace Monity.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
+        public BoardContainer GetBoardContainer(int boardId)
+        {
+            var containter = new BoardContainer();
+            containter.Board = _repositoryWrapper.BoardRepository.
+                                GetByCondition(c => c.Id == boardId);
+            containter.BoardStatuses = _repositoryWrapper.BoardStatusRepository.
+                                     FindByCondition(c => c.BoardId == boardId).ToList();
+            containter.UserTasks = _repositoryWrapper.UserTaskRepository.
+                                    FindByCondition(c => c.BoardId == boardId).ToList();
+            containter.Statuses = new List<Status>();
+
+            foreach (BoardStatus bs in containter.BoardStatuses)
+            {
+                var test = _repositoryWrapper.StatusRepository.
+                                        GetByCondition(c => c.Id == bs.StatusId);
+                containter.Statuses.Add(test);
+            }
+
+            return containter;
+        }
+
         public BoardViewModel GetBoardViewModel()
         {
             int id = 1;

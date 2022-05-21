@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Monity.Models;
 using Monity.Services;
 using Monity.Services.Interfaces;
@@ -26,14 +27,34 @@ namespace Monity.Controllers
             return View();
         }
 
-        public IActionResult Menu()
+        [Authorize(Roles = "User")]
+        public IActionResult Menu(int selectedBoardId)
         {
-            var temp = _boardService.GetBoardViewModel();
-            TempData["BoardId"] = temp.SelectedBoard.Board.Id;
+            if(selectedBoardId == 0)
+            {
+                var temp = _boardService.GetBoardViewModel();
+                TempData["BoardId"] = temp.SelectedBoard.Board.Id;
 
-            return View(temp);
+                return View(temp);
+            }
+            else
+            {
+                var boardsViewModel = _boardService.GetBoardViewModel();
+                boardsViewModel.SelectedBoard = _boardService.GetBoardContainer(selectedBoardId);
+                return View(boardsViewModel);
+            }
         }
 
+        //[Authorize(Roles = "User")]
+        //[HttpPut]
+        //public IActionResult Menu(Board board)
+        //{
+        //    var boardsViewModel = _boardService.GetBoardViewModel();
+        //    boardsViewModel.SelectedBoard = _boardService.GetBoardContainer(board);
+        //    return View(boardsViewModel);
+        //}
+
+        [Authorize(Roles = "User")]
         [HttpPost]
         public IActionResult Menu(string overdue)
         {

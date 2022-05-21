@@ -35,6 +35,11 @@ namespace Monity.Services
             _repositoryWrapper.Save();
         }
 
+        public List<Board> GetAllBoards()
+        {
+            return _repositoryWrapper.BoardRepository.FindAll().ToList();
+        }
+
         public Board GetBoardById(int boardId)
         {
             return _repositoryWrapper.BoardRepository.GetByCondition(c => c.Id == boardId);
