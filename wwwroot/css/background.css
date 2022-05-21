@@ -1,0 +1,13 @@
+﻿
+
+.cat-background {
+    background-image: url("../images/catweb.png");
+    background-color: transparent;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+/*body {
+    background-image: url("../images/cat.jpg");
+    background-color: #ff0000;
+}*/

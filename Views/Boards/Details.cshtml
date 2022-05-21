@@ -1,0 +1,45 @@
+﻿@model Monity.Models.Board
+
+@{
+    ViewData["Title"] = "Details";
+}
+<head>
+    <link rel="stylesheet" href="~/css/background.css">
+</head>
+
+
+<body class="cat-background">
+
+
+<div class="container">
+    <main role="main" class="pb-3">
+
+<h1>Details</h1>
+
+<div>
+    <h4>Board</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a class="btn btn-info" asp-action="Menu" asp-controller="Home">Back to List</a>
+</div>
+
+    </main>
+</div>
+
+</body>
