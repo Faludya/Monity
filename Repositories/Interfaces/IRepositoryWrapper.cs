@@ -7,7 +7,6 @@
         IBoardStatusRepository BoardStatusRepository{ get; }
         IStatusRepository StatusRepository{ get; }
         IUserBoardRepository UserBoardRepository{ get; }
-        IUserRepository UserRepository{ get; }
         IUserTaskRepository UserTaskRepository{ get; }
 
         void Save();

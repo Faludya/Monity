@@ -28,9 +28,6 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUserBoardRepository, UserBoardRepository>();
 builder.Services.AddScoped<IUserBoardService, UserBoardService>();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-
 builder.Services.AddScoped<IUserTaskRepository, UserTaskRepository>();
 builder.Services.AddScoped<IUserTaskService, UserTaskService>();
 
