@@ -7,5 +7,6 @@ namespace Monity.Services.Interfaces
     {
         BoardViewModel GetBoardViewModel();
         BoardViewModel GetBoardViewModel(string overdue);
+        BoardContainer GetBoardContainer(int boardId);
     }
 }

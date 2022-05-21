@@ -8,6 +8,7 @@ namespace Monity.Services.Interfaces
         void UpdateBoard(Board board);
         void DeleteBoard(Board board);
         List<Board> GetBoardsByUserId(int userId);
+        List<Board> GetAllBoards();
         Board GetBoardById(int boardId);
     }
 }
