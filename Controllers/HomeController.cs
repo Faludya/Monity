@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Monity.Models;
 using Monity.Services;
@@ -8,20 +9,25 @@ using System.Diagnostics;
 
 namespace Monity.Controllers
 {
+    [Authorize(Roles = "User")]
     public class HomeController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IBoardViewModelService _boardService;
-        public HomeController(IBoardViewModelService boardService)
+        public HomeController(UserManager<IdentityUser> userManager, IBoardViewModelService boardService)
         {
             this._boardService = boardService;
+            _userManager = userManager;
         }
 
+        [AllowAnonymous]
         public IActionResult Index([FromServices] ILog log)
         {
             log.Info("Executing /Home/Index");
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
@@ -32,33 +38,32 @@ namespace Monity.Controllers
         {
             if(selectedBoardId == 0)
             {
-                var temp = _boardService.GetBoardViewModel();
-                TempData["BoardId"] = temp.SelectedBoard.Board.Id;
-
+                var temp = _boardService.GetBoardViewModel(_userManager.GetUserId(User));
+                if(temp.SelectedBoard != null)
+                {
+                    TempData["BoardId"] = temp.SelectedBoard.Board.Id;
+                    TempData["RemoveUserBoardId"] = temp.SelectedBoard.Board.Id;
+                }
                 return View(temp);
             }
             else
             {
-                var boardsViewModel = _boardService.GetBoardViewModel();
+                var boardsViewModel = _boardService.GetBoardViewModel(_userManager.GetUserId(User));
                 boardsViewModel.SelectedBoard = _boardService.GetBoardContainer(selectedBoardId);
+                TempData["BoardId"] = boardsViewModel.SelectedBoard.Board.Id;
+                TempData["RemoveUserBoardId"] = boardsViewModel.SelectedBoard.Board.Id;
+
                 return View(boardsViewModel);
             }
         }
 
-        //[Authorize(Roles = "User")]
-        //[HttpPut]
-        //public IActionResult Menu(Board board)
-        //{
-        //    var boardsViewModel = _boardService.GetBoardViewModel();
-        //    boardsViewModel.SelectedBoard = _boardService.GetBoardContainer(board);
-        //    return View(boardsViewModel);
-        //}
-
         [Authorize(Roles = "User")]
         [HttpPost]
-        public IActionResult Menu(string overdue)
+        public IActionResult Menu(int selectedBoardId, string overdue)
         {
-            return View(_boardService.GetBoardViewModel(overdue));
+            TempData["BoardId"] = selectedBoardId;
+            TempData["RemoveUserBoardId"] = selectedBoardId;
+            return View(_boardService.GetBoardViewModel(selectedBoardId ,_userManager.GetUserId(User), overdue));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

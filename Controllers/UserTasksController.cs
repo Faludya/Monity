@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Monity.Services.Interfaces;
 
 namespace Monity.Controllers
 {
+    [Authorize(Roles = "User")]
     public class UserTasksController : Controller
     {
         private readonly IUserTaskService _userTaskService;
@@ -50,7 +52,8 @@ namespace Monity.Controllers
             if (ModelState.IsValid)
             {
                 _userTaskService.CreateTask(userTask);
-                return RedirectToAction("Menu", "Home");
+                var boardId = (int)TempData["BoardId"];
+                return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
             }
 
             var boardStatuses = _userTaskService.GetBoardStatuses(userTask.BoardId);
@@ -92,7 +95,8 @@ namespace Monity.Controllers
                 {
                 }
 
-                return RedirectToAction("Menu", "Home");
+                var boardId = (int)TempData["BoardId"];
+                return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
             }
 
             var boardStatuses = _userTaskService.GetBoardStatuses(userTask.BoardId);
@@ -119,7 +123,8 @@ namespace Monity.Controllers
             var userTask =  _userTaskService.GetUserTask(id);
             _userTaskService.DeleteTask(userTask);
 
-            return RedirectToAction("Menu", "Home");
+            var boardId = (int)TempData["BoardId"];
+            return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
         }
     }
 }

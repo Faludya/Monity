@@ -60,6 +60,9 @@ builder.Services.AddScoped<IUserBoardService, UserBoardService>();
 builder.Services.AddScoped<IUserTaskRepository, UserTaskRepository>();
 builder.Services.AddScoped<IUserTaskService, UserTaskService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IBoardViewModelRepository, BoardViewModelRepository>();
 builder.Services.AddScoped<IBoardViewModelService, BoardViewModelService>();
 

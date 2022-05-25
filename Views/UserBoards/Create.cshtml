@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Create";
 }
+<div class="container">
+    <main role="main" class="pb-3">
 
 <h1>Create</h1>
 
@@ -18,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="BoardId" class="control-label"></label>
-                <select asp-for="BoardId" class ="form-control" asp-items="ViewBag.BoardId"></select>
+                <input asp-for="BoardId" class ="form-control" readonly></input>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -28,7 +30,10 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Menu" asp-controller="Home" asp-route-selectedBoardId="BoardId">Back to List</a>
+</div>
+
+    </main>
 </div>
 
 @section Scripts {

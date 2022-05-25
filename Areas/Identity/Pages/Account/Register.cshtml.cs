@@ -152,7 +152,16 @@ namespace Monity.Areas.Identity.Pages.Account
                         {
                             await _roleManager.CreateAsync(new IdentityRole("User"));
                         }
-                        await _userManager.AddToRoleAsync(user, "User");
+
+                        if (Input.Email.Contains("@admin.com"))
+                        {
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                        }
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, "User");
+                        }
+                            
                         return LocalRedirect(returnUrl);
                     }
                 }

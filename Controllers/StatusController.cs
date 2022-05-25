@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Monity.Services.Interfaces;
 
 namespace Monity.Controllers
 {
+    [Authorize(Roles = "User")]
     public class StatusController : Controller
     {
         private readonly IStatusService _statusService;
@@ -46,8 +48,9 @@ namespace Monity.Controllers
         {
             if (ModelState.IsValid)
             {
-                _statusService.CreateStatus(status, (int)TempData["BoardId"]);
-                return RedirectToAction("Menu", "Home");
+                var boardId = (int)TempData["BoardId"];
+                _statusService.CreateStatus(status, boardId);
+                return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId});
             }
             return View(status);
         }
@@ -80,7 +83,8 @@ namespace Monity.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                 }
-                return RedirectToAction("Menu", "Home");
+                var boardId = (int)TempData["BoardId"];
+                return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
             }
             return View(status);
         }
@@ -101,7 +105,8 @@ namespace Monity.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _statusService.DeleteStatus(_statusService.GetStatusById(id));
-            return RedirectToAction("Menu", "Home");
+            var boardId = (int)TempData["BoardId"];
+            return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
         }
     }
 }

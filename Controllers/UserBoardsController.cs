@@ -3,40 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Monity.Models;
+using Monity.Services.Interfaces;
 
 namespace Monity.Controllers
 {
+    [Authorize(Roles = "User")]
     public class UserBoardsController : Controller
     {
-        private readonly MonityContext _context;
-
-        public UserBoardsController(MonityContext context)
+        private readonly IUserBoardService _userBoardService;
+        private readonly IUserService _userService;
+        public UserBoardsController(IUserBoardService userBoardService, IUserService userService)
         {
-            _context = context;
+            _userBoardService = userBoardService;
+            _userService = userService;
         }
 
-        // GET: UserBoards
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int boardId)
         {
-            var monityContext = _context.UserBoards.Include(u => u.Board);
-            return View(await monityContext.ToListAsync());
+            var test = _userService.GetUsersOfBoard(boardId);
+            return View(test);
         }
 
-        // GET: UserBoards/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userBoard = _userBoardService.GetUserBoardById(id);
 
-            var userBoard = await _context.UserBoards
-                .Include(u => u.Board)
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (userBoard == null)
             {
                 return NotFound();
@@ -45,120 +41,52 @@ namespace Monity.Controllers
             return View(userBoard);
         }
 
-        // GET: UserBoards/Create
-        public IActionResult Create()
+        public IActionResult Create(int boardId)
         {
-            ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id");
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["BoardId"] = boardId;
+            ViewData["UserId"] = new SelectList(_userService.GetAllUsers(), "Id", "Email");
             return View();
         }
 
-        // POST: UserBoards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,BoardId")] UserBoard userBoard)
+        public IActionResult Create([Bind("Id,UserId,BoardId")] UserBoard userBoard)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(userBoard);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _userBoardService.CreateUserBoard(userBoard);
+                return RedirectToAction("Menu", "Home", new { selectedBoardId = userBoard.BoardId });
             }
-            ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
+            ViewData["BoardId"] = userBoard.BoardId;
+            ViewData["UserId"] = new SelectList(_userService.GetAllUsers(), "Id", "Email");
             return View(userBoard);
         }
 
-        // GET: UserBoards/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public IActionResult Delete(string userId)
+        //{
+        //    var boardId = (int)TempData["RemoveUserBoardId"];
 
-            var userBoard = await _context.UserBoards.FindAsync(id);
-            if (userBoard == null)
-            {
-                return NotFound();
-            }
-            ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
-            return View(userBoard);
-        }
+        //    var userBoard = _userBoardService.GetUserBoardByUserAndBoardId(userId, boardId);
 
-        // POST: UserBoards/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,BoardId")] UserBoard userBoard)
-        {
-            if (id != userBoard.Id)
-            {
-                return NotFound();
-            }
+        //    if (userBoard == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(userBoard);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserBoardExists(userBoard.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BoardId"] = new SelectList(_context.Boards, "Id", "Id", userBoard.BoardId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userBoard.UserId);
-            return View(userBoard);
-        }
 
-        // GET: UserBoards/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //    _userBoardService.DeleteUserBoard(userBoard);
 
-            var userBoard = await _context.UserBoards
-                .Include(u => u.Board)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (userBoard == null)
-            {
-                return NotFound();
-            }
+        //    return RedirectToAction("Menu", "Home", new { selectedBoardId = boardId });
+        //}
 
-            return View(userBoard);
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult DeleteConfirmed(int id)
+        //{
+        //    var userBoard = _userBoardService.GetUserBoardById(id);
+        //    _userBoardService.DeleteUserBoard(userBoard);
 
-        // POST: UserBoards/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var userBoard = await _context.UserBoards.FindAsync(id);
-            _context.UserBoards.Remove(userBoard);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserBoardExists(int id)
-        {
-            return _context.UserBoards.Any(e => e.Id == id);
-        }
+        //    return RedirectToAction("Menu", "Home", new { selectedBoardId = id});
+        //}
     }
 }

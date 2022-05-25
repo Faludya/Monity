@@ -13,7 +13,7 @@ namespace Monity.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public void CreateBoard(Board board, int userId)
+        public void CreateBoard(Board board, string userId)
         {
             board.CreationDate = DateTime.Now;
             _repositoryWrapper.BoardRepository.Create(board);
@@ -45,7 +45,7 @@ namespace Monity.Services
             return _repositoryWrapper.BoardRepository.GetByCondition(c => c.Id == boardId);
         }
 
-        public List<Board> GetBoardsByUserId(int userId)
+        public List<Board> GetBoardsByUserId(string userId)
         {
            var userBoards = _repositoryWrapper.UserBoardRepository.FindByCondition(c => c.UserId == userId.ToString()).ToList();
            var boardsList = new List<Board>();

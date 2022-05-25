@@ -8,7 +8,7 @@
         IStatusRepository StatusRepository{ get; }
         IUserBoardRepository UserBoardRepository{ get; }
         IUserTaskRepository UserTaskRepository{ get; }
-
+        IUserRepository UserRepository{ get; }
         void Save();
     }
 }

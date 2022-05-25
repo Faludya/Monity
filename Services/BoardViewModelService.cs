@@ -35,9 +35,9 @@ namespace Monity.Services
             return containter;
         }
 
-        public BoardViewModel GetBoardViewModel()
+        public BoardViewModel GetBoardViewModel(string userId)
         {
-            int id = 1;
+            string id = userId;
 
             var boardVm = new BoardViewModel();
             boardVm.Boards = new List<BoardContainer>();
@@ -66,13 +66,15 @@ namespace Monity.Services
                 boardVm.Boards.Add(containter);
             }
 
-            boardVm.SelectedBoard = boardVm.Boards[0];
+            if(boardVm.Boards.Count > 0)
+                boardVm.SelectedBoard = boardVm.Boards[0];
+    
             return boardVm;
         }
 
-        public BoardViewModel GetBoardViewModel(string overdue)
+        public BoardViewModel GetBoardViewModel(int selectedBoardId, string userId, string overdue)
         {
-            int id = 1;
+            string id = userId;
 
             var boardVm = new BoardViewModel();
             boardVm.Boards = new List<BoardContainer>();
@@ -94,6 +96,21 @@ namespace Monity.Services
                                         FindByCondition(c => c.BoardId == userBoard.BoardId && c.DueDate < DateTime.Now).ToList();
                         break;
 
+                    case "week":
+                        DateTime StartOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+                        DateTime EndOfWeek = StartOfWeek.AddDays(7);
+
+                        containter.UserTasks = _repositoryWrapper.UserTaskRepository.
+                                        FindByCondition(c => c.BoardId == userBoard.BoardId && c.DueDate <= EndOfWeek).ToList();
+                        break;
+                    case "month":
+                        var StartOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                        var noDaysInMonth = DateTime.DaysInMonth(StartOfMonth.Year, StartOfMonth.Month);
+                        var EndOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(noDaysInMonth - 1);
+
+                        containter.UserTasks = _repositoryWrapper.UserTaskRepository.
+                                        FindByCondition(c => c.BoardId == userBoard.BoardId && c.DueDate <= EndOfMonth).ToList();
+                        break;
                     default:
                         containter.UserTasks = _repositoryWrapper.UserTaskRepository.
                                         FindByCondition(c => c.BoardId == userBoard.BoardId).ToList();
@@ -112,7 +129,14 @@ namespace Monity.Services
                 boardVm.Boards.Add(containter);
             }
 
-            boardVm.SelectedBoard = boardVm.Boards[0];
+            foreach(var board in boardVm.Boards)
+            {
+                if(board.Board.Id == selectedBoardId)
+                {
+                    boardVm.SelectedBoard = board;
+                    break;
+                }
+            }
 
             return boardVm;
         }

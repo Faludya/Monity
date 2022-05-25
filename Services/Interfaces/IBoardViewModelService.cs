@@ -5,8 +5,8 @@ namespace Monity.Services.Interfaces
 {
     public interface IBoardViewModelService
     {
-        BoardViewModel GetBoardViewModel();
-        BoardViewModel GetBoardViewModel(string overdue);
+        BoardViewModel GetBoardViewModel(string userId);
+        BoardViewModel GetBoardViewModel(int selectedBoardId, string userId, string overdue);
         BoardContainer GetBoardContainer(int boardId);
     }
 }
